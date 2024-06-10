@@ -16,5 +16,8 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
           cache: 'maven'
+      - run: |
+          git config user.email "tech@onlydust.com"
+          git config user.name "OnlyDust Tech team"
       - run: ./mvnw --batch-mode release:prepare
       - run: ./mvnw release:perform

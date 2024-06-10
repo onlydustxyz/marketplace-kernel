@@ -1,11 +1,13 @@
-name: CI
+name: Release a new version
 
 on:
-  pull_request: ~
+  push:
+    branches:
+      - "main"
 
 jobs:
   build:
-    name: Build
+    name: Release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -14,4 +16,5 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
           cache: 'maven'
-      - run: ./mvnw clean install -T4
+      - run: ./mvnw --batch-mode release:prepare
+      - run: ./mvnw release:perform

@@ -29,6 +29,7 @@
                 <configuration>
                     <projectVersionPolicyId>SemVerVersionPolicy</projectVersionPolicyId>
                     <tagNameFormat>v@{project.version}</tagNameFormat>
+                    <preparationGoals>clean verify</preparationGoals>
                 </configuration>
             </plugin>
         </plugins>

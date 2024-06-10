@@ -10,11 +10,25 @@
     <name>marketplace-kernel</name>
     <description>OnlyDust marketplace shared modules</description>
 
+    <scm>
+        <developerConnection>scm:git:https://github.com/onlydustxyz/marketplace-kernel.git</developerConnection>
+    </scm>
+
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>3.0.1</version>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
         <dependency>

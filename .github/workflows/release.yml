@@ -20,4 +20,4 @@ jobs:
           git config user.email "tech@onlydust.com"
           git config user.name "OnlyDust Tech team"
       - run: ./mvnw --batch-mode release:prepare
-      - run: ./mvnw release:perform -Dtoken={{ secrets.GITHUB_TOKEN }}
+      - run: ./mvnw release:perform -Dpassword={{ secrets.GITHUB_TOKEN }}

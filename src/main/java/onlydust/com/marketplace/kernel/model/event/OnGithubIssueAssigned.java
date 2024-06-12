@@ -23,6 +23,8 @@ public class OnGithubIssueAssigned extends Event {
     @NonNull
     Long assigneeId;
     @NonNull
+    ZonedDateTime createdAt;
+    @NonNull
     ZonedDateTime assignedAt;
     @NonNull
     Set<String> labels;

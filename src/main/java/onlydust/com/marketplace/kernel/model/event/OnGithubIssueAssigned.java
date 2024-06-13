@@ -21,6 +21,8 @@ public class OnGithubIssueAssigned extends Event {
     @NonNull
     Long id;
     @NonNull
+    Long repoId;
+    @NonNull
     Long assigneeId;
     @NonNull
     ZonedDateTime createdAt;

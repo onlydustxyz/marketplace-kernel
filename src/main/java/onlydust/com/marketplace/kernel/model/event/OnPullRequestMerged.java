@@ -20,6 +20,8 @@ public class OnPullRequestMerged extends Event {
     @NonNull
     Long id;
     @NonNull
+    Long repoId;
+    @NonNull
     Long authorId;
     @NonNull
     ZonedDateTime createdAt;

@@ -4,13 +4,13 @@
 
     <groupId>onlydust.com.marketplace.kernel</groupId>
     <artifactId>marketplace-kernel</artifactId>
-    <version>0.17.0-SNAPSHOT</version>
+    <version>0.17.0</version>
     <name>marketplace-kernel</name>
     <description>OnlyDust marketplace shared modules</description>
 
     <scm>
         <developerConnection>scm:git:https://github.com/onlydustxyz/marketplace-kernel.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>v0.17.0</tag>
     </scm>
 
     <distributionManagement>

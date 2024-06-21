@@ -1,8 +1,7 @@
-package onlydust.com.marketplace.kernel.jobs;
+package onlydust.com.marketplace.kernel.port.output;
 
 import lombok.AllArgsConstructor;
 import onlydust.com.marketplace.kernel.model.Event;
-import onlydust.com.marketplace.kernel.port.output.OutboxConsumer;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 
@@ -12,11 +11,11 @@ public class RetriedOutboxConsumer implements OutboxConsumer {
 
     @Override
     public void process(Event event) {
-        notify(event);
+        processWithRetry(event);
     }
 
     @Retryable(maxAttempts = 6, backoff = @Backoff(delay = 500, multiplier = 2))
-    private void notify(Event event) {
+    private void processWithRetry(Event event) {
         consumer.process(event);
     }
 }

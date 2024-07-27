@@ -18,7 +18,7 @@ public class IdentifiableNotification {
     @NonNull
     UUID id;
 
-    @NonNull Notification notification;
+    @NonNull NotificationData data;
 
     @NonNull ZonedDateTime createdAt;
 }

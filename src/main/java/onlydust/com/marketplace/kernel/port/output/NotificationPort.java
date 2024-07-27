@@ -1,8 +1,8 @@
 package onlydust.com.marketplace.kernel.port.output;
 
 import onlydust.com.marketplace.kernel.model.notification.IdentifiableNotification;
-import onlydust.com.marketplace.kernel.model.notification.Notification;
 import onlydust.com.marketplace.kernel.model.notification.NotificationChannel;
+import onlydust.com.marketplace.kernel.model.notification.NotificationData;
 import onlydust.com.marketplace.kernel.model.notification.NotificationRecipient;
 
 import java.util.List;
@@ -14,9 +14,9 @@ public interface NotificationPort {
      * Pushes a notification to a recipient.
      *
      * @param recipientId recipient's user ID
-     * @param notification notification to push
+     * @param notificationData notification to push
      */
-    void push(UUID recipientId, Notification notification);
+    void push(UUID recipientId, NotificationData notificationData);
 
     /**
      * Retrieves all pending notifications per recipient for a given channel.

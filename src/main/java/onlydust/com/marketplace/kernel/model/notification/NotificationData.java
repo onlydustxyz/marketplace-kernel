@@ -4,6 +4,6 @@ import lombok.Data;
 
 
 @Data
-public abstract class Notification {
+public abstract class NotificationData {
     public abstract NotificationCategory category();
 }

@@ -13,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Accessors(fluent = true)
-public class IdentifiableNotification {
+public class Notification {
     @EqualsAndHashCode.Include
     @NonNull
     UUID id;

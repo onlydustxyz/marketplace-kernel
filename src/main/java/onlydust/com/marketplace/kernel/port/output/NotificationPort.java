@@ -1,6 +1,6 @@
 package onlydust.com.marketplace.kernel.port.output;
 
-import onlydust.com.marketplace.kernel.model.notification.IdentifiableNotification;
+import onlydust.com.marketplace.kernel.model.notification.Notification;
 import onlydust.com.marketplace.kernel.model.notification.NotificationChannel;
 import onlydust.com.marketplace.kernel.model.notification.NotificationData;
 import onlydust.com.marketplace.kernel.model.notification.NotificationRecipient;
@@ -24,5 +24,5 @@ public interface NotificationPort {
      * @param channel notification channel
      * @return a map of recipients and their pending notifications that must be sent through the given channel
      */
-    Map<NotificationRecipient, List<IdentifiableNotification>> getPendingNotificationsPerRecipient(NotificationChannel channel);
+    Map<NotificationRecipient, List<Notification>> getPendingNotificationsPerRecipient(NotificationChannel channel);
 }

@@ -1,8 +1,12 @@
 package onlydust.com.marketplace.kernel.model.notification;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NonNull;
+import lombok.Value;
 import lombok.experimental.Accessors;
 
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Set;
 import java.util.UUID;
@@ -10,12 +14,9 @@ import java.util.UUID;
 @Value
 @Builder
 @AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Accessors(fluent = true)
 public class Notification {
-    @EqualsAndHashCode.Include
-    @NonNull
-    UUID id;
+    @NonNull UUID id;
 
     @NonNull UUID recipientId;
 
@@ -32,7 +33,7 @@ public class Notification {
                 .id(UUID.randomUUID())
                 .recipientId(recipientId)
                 .data(notificationData)
-                .createdAt(ZonedDateTime.now())
+                .createdAt(ZonedDateTime.now(ZoneOffset.UTC))
                 .channels(channels)
                 .build();
     }

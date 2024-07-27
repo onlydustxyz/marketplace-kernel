@@ -15,8 +15,9 @@ public interface NotificationPort {
      *
      * @param recipientId recipient's user ID
      * @param notificationData notification to push
+     * @return the pushed notification
      */
-    void push(UUID recipientId, NotificationData notificationData);
+    Notification push(UUID recipientId, NotificationData notificationData);
 
     /**
      * Retrieves all pending notifications per recipient for a given channel.

@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class NotificationIdResolver extends TypeIdResolverBase {
+public class NotificationTypeIdResolver extends TypeIdResolverBase {
     private static final Map<String, Class<?>> typeMap = Collections.synchronizedMap(new HashMap<>());
 
     record NotificationAnnotatedClass(Class<?> aClass, NotificationType notificationType) {

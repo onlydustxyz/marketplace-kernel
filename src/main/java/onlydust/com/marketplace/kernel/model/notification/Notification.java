@@ -1,18 +1,20 @@
 package onlydust.com.marketplace.kernel.model.notification;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NonNull;
-import lombok.Value;
+import lombok.*;
 import lombok.experimental.Accessors;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Set;
 import java.util.UUID;
 
-@Value
-@Builder
+@Getter
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@EqualsAndHashCode
+@ToString
+@SuperBuilder
 @AllArgsConstructor
 @Accessors(fluent = true)
 public class Notification {

@@ -6,21 +6,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import onlydust.com.marketplace.kernel.model.notification.NotificationIdResolver;
 import onlydust.com.marketplace.kernel.model.notification.NotificationType;
+import onlydust.com.marketplace.kernel.model.notification.NotificationTypeIdResolver;
 import org.junit.jupiter.api.Test;
 
 import java.io.Serializable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class NotificationIdResolverTest {
+class NotificationTypeIdResolverTest {
 
     @AllArgsConstructor
     @NoArgsConstructor
     public static class TestNotificationContainer implements Serializable {
         @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "@type")
-        @JsonTypeIdResolver(NotificationIdResolver.class)
+        @JsonTypeIdResolver(NotificationTypeIdResolver.class)
         private TestNotification testNotification;
     }
 

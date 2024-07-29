@@ -14,6 +14,4 @@ public interface NotificationPort {
      * @return the pushed notification
      */
     Notification push(UUID recipientId, NotificationData notificationData);
-
-    //void markAsSent(NotificationChannel channel, List<UUID> notificationId);
 }

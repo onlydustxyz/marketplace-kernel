@@ -15,7 +15,7 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @EqualsAndHashCode
 @ToString
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @AllArgsConstructor
 @Accessors(fluent = true)
 public class Notification {

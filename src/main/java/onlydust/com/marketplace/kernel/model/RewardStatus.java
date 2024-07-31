@@ -16,19 +16,19 @@ public class RewardStatus {
     @NonNull RewardStatus.Input status;
 
     public Output as(AuthenticatedUser user) {
-        if (user.getRoles().contains(AuthenticatedUser.Role.INTERNAL_SERVICE) || user.getAdministratedBillingProfiles().contains(billingProfileId)) {
+        if (user.roles().contains(AuthenticatedUser.Role.INTERNAL_SERVICE) || user.administratedBillingProfiles().contains(billingProfileId)) {
             return asBillingProfileAdmin();
         }
 
-        if (user.getGithubUserId().equals(recipientId)) {
+        if (user.githubUserId().equals(recipientId)) {
             return asRecipient();
         }
 
-        if (user.getProjectsLed().contains(projectId)) {
+        if (user.projectsLed().contains(projectId)) {
             return asProjectLead();
         }
 
-        throw OnlyDustException.forbidden("User %s is not authorized to view this reward status".formatted(user.getId()));
+        throw OnlyDustException.forbidden("User %s is not authorized to view this reward status".formatted(user.id()));
     }
 
     public enum Input {
@@ -47,15 +47,16 @@ public class RewardStatus {
 
     private Output asRecipient() {
         return switch (status) {
-            case PENDING_VERIFICATION, GEO_BLOCKED, PAYOUT_INFO_MISSING, LOCKED, PENDING_REQUEST -> Output.PENDING_COMPANY;
+            case PENDING_VERIFICATION, GEO_BLOCKED, PAYOUT_INFO_MISSING, LOCKED, PENDING_REQUEST ->
+                    Output.PENDING_COMPANY;
             default -> Output.valueOf(status.toString());
         };
     }
 
     private Output asProjectLead() {
         return switch (status) {
-            case PENDING_BILLING_PROFILE, PENDING_VERIFICATION, GEO_BLOCKED, INDIVIDUAL_LIMIT_REACHED, PAYOUT_INFO_MISSING, LOCKED, PENDING_REQUEST ->
-                    Output.PENDING_CONTRIBUTOR;
+            case PENDING_BILLING_PROFILE, PENDING_VERIFICATION, GEO_BLOCKED, INDIVIDUAL_LIMIT_REACHED,
+                 PAYOUT_INFO_MISSING, LOCKED, PENDING_REQUEST -> Output.PENDING_CONTRIBUTOR;
             default -> Output.valueOf(status.toString());
         };
     }

@@ -40,7 +40,7 @@ class RewardStatusTest {
     private AuthenticatedUser billingProfileAdmin() {
         return AuthenticatedUser.builder()
                 .githubUserId(faker.number().randomNumber(4, true))
-                .administratedBillingProfiles(List.of(billingProfileId))
+                .billingProfiles(List.of(new AuthenticatedUser.BillingProfileMembership(billingProfileId, AuthenticatedUser.BillingProfileMembership.Role.ADMIN)))
                 .build();
     }
 

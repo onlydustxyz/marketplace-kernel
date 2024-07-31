@@ -1,16 +1,18 @@
 package onlydust.com.marketplace.kernel.model.github;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder(toBuilder = true)
+@SuperBuilder(toBuilder = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Accessors(fluent = true)
 public class GithubUserIdentity {
     @EqualsAndHashCode.Include
     Long githubUserId;
-    String githubLogin;
-    String githubAvatarUrl;
+    String login;
+    String avatarUrl;
     String email;
 }

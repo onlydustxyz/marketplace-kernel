@@ -9,10 +9,16 @@ import java.util.regex.Pattern;
 import static onlydust.com.marketplace.kernel.exception.OnlyDustException.badRequest;
 
 public abstract class Hash {
+    public static final Pattern HEX = Pattern.compile("[0-9a-fA-F]+");
+
     final @NonNull String inner;
 
     protected Hash(final int maxByteCount, final @NonNull String hash) {
-        final var validator = Validator.of(maxByteCount);
+        this(maxByteCount, hash, "0x", HEX);
+    }
+
+    protected Hash(final int maxByteCount, final @NonNull String hash, final String prefix, final @NonNull Pattern validityPattern) {
+        final var validator = Validator.of(maxByteCount, prefix == null ? "" : prefix, validityPattern);
         validator.check(hash);
 
         this.inner = validator.sanitize(hash);
@@ -41,18 +47,26 @@ public abstract class Hash {
     @AllArgsConstructor(staticName = "of")
     @EqualsAndHashCode
     private static class Validator {
-        private static final Pattern HEX_PATTERN = Pattern.compile("^0[xX][a-fA-F0-9]+$");
-        private final int maxByteCount;
+        private final @NonNull Integer maxByteCount;
+        private final @NonNull String prefix;
+        private final @NonNull Pattern pattern;
 
         public void check(final @NonNull String hash) {
-            if (!HEX_PATTERN.matcher(hash).matches()) throw badRequest("Provided hash is not hexadecimal");
-            if (hash.length() < 3) throw badRequest("Provided hash is too short");
-            if (hash.length() > maxByteCount * 2 + 2)
+            final var hashPrefix = hash.substring(0, prefix.length());
+            if (!hashPrefix.equalsIgnoreCase(prefix))
+                throw badRequest("Provided hash should start with %s".formatted(prefix));
+
+            final var hashBody = hash.substring(prefix.length());
+            if (hashBody.isEmpty())
+                throw badRequest("Provided hash is too short");
+            if (hashBody.length() > maxByteCount * 2)
                 throw badRequest("Provided hash should be less than %d bytes".formatted(maxByteCount));
+            if (!pattern.matcher(hashBody).matches())
+                throw badRequest("Provided hash is not valid");
         }
 
-        public String sanitize(String hash) {
-            return "0x" + (hash.length() % 2 == 0 ? "" : "0") + hash.substring(2);
+        public String sanitize(final @NonNull String hash) {
+            return prefix + ((hash.length() - prefix.length()) % 2 == 0 ? "" : "0") + hash.substring(prefix.length());
         }
     }
 }

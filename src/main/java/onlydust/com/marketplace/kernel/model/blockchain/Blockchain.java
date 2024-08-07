@@ -1,7 +1,7 @@
 package onlydust.com.marketplace.kernel.model.blockchain;
 
 public enum Blockchain {
-    ETHEREUM, OPTIMISM, STARKNET, APTOS;
+    ETHEREUM, OPTIMISM, STARKNET, APTOS, STELLAR;
 
     public String pretty() {
         return switch (this) {
@@ -9,6 +9,7 @@ public enum Blockchain {
             case OPTIMISM -> "Optimism";
             case STARKNET -> "StarkNet";
             case APTOS -> "Aptos";
+            case STELLAR -> "Stellar";
         };
     }
 }

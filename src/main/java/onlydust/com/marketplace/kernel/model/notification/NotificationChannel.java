@@ -5,6 +5,6 @@ public enum NotificationChannel {
     IN_APP,
     /** Notification will be sent to the user's email */
     EMAIL,
-    /** Notification will be sent to the user's daily email digest */
-    DAILY_EMAIL
+    /** Notification will be sent to the user's summary email digest */
+    SUMMARY_EMAIL
 }

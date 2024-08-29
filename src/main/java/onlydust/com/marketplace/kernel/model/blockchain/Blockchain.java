@@ -1,5 +1,9 @@
 package onlydust.com.marketplace.kernel.model.blockchain;
 
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
+import java.util.Optional;
+
 public enum Blockchain {
     ETHEREUM, OPTIMISM, STARKNET, APTOS, STELLAR;
 
@@ -11,5 +15,21 @@ public enum Blockchain {
             case APTOS -> "Aptos";
             case STELLAR -> "Stellar";
         };
+    }
+
+    public interface Transaction {
+        String reference();
+
+        ZonedDateTime timestamp();
+    }
+
+    public interface TransferTransaction extends Transaction {
+        String senderAddress();
+
+        String recipientAddress();
+
+        BigDecimal amount();
+
+        Optional<String> contractAddress();
     }
 }

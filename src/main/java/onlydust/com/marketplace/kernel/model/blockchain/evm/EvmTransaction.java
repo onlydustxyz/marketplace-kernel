@@ -1,13 +1,27 @@
 package onlydust.com.marketplace.kernel.model.blockchain.evm;
 
-import lombok.EqualsAndHashCode;
-import lombok.NonNull;
+import lombok.*;
+import lombok.experimental.Accessors;
+import lombok.experimental.FieldDefaults;
+import onlydust.com.marketplace.kernel.model.blockchain.Blockchain;
 import onlydust.com.marketplace.kernel.model.blockchain.Blockchain.Transaction;
 import onlydust.com.marketplace.kernel.model.blockchain.PrefixedHexHash;
 
 import java.time.ZonedDateTime;
 
-public record EvmTransaction(Hash hash, ZonedDateTime timestamp) implements Transaction {
+@AllArgsConstructor
+@EqualsAndHashCode
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@Getter
+@Accessors(fluent = true)
+public class EvmTransaction implements Transaction {
+    Blockchain blockchain;
+
+    Hash hash;
+
+    ZonedDateTime timestamp;
+
+    Status status;
 
     @Override
     public String reference() {

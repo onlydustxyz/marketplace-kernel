@@ -3,6 +3,7 @@ package onlydust.com.marketplace.kernel.model.blockchain.aptos;
 import lombok.*;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
+import onlydust.com.marketplace.kernel.model.blockchain.Blockchain;
 import onlydust.com.marketplace.kernel.model.blockchain.Blockchain.Transaction;
 import onlydust.com.marketplace.kernel.model.blockchain.PrefixedHexHash;
 
@@ -15,8 +16,15 @@ import java.time.ZonedDateTime;
 @Accessors(fluent = true)
 public class AptosTransaction implements Transaction {
     Hash hash;
-    
+
     ZonedDateTime timestamp;
+
+    Status status;
+
+    @Override
+    public Blockchain blockchain() {
+        return Blockchain.APTOS;
+    }
 
     @Override
     public String reference() {

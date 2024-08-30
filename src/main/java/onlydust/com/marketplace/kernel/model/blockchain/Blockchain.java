@@ -18,9 +18,17 @@ public enum Blockchain {
     }
 
     public interface Transaction {
+        Blockchain blockchain();
+
+        Status status();
+
         String reference();
 
         ZonedDateTime timestamp();
+
+        enum Status {
+            PENDING, CONFIRMED, FAILED
+        }
     }
 
     public interface TransferTransaction extends Transaction {

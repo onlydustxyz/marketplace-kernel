@@ -5,6 +5,8 @@ import onlydust.com.marketplace.kernel.model.ProjectId;
 import onlydust.com.marketplace.kernel.model.SponsorId;
 import onlydust.com.marketplace.kernel.model.UserId;
 
+import java.util.Optional;
+
 public interface PermissionPort {
     boolean isUserProjectLead(ProjectId projectId, UserId projectLeadId);
 
@@ -12,9 +14,9 @@ public interface PermissionPort {
 
     boolean isRepoLinkedToProject(ProjectId projectId, Long githubRepoId);
 
-    boolean hasUserAccessToProject(ProjectId projectId, UserId userId);
+    boolean hasUserAccessToProject(ProjectId projectId, Optional<UserId> userId);
 
-    boolean hasUserAccessToProject(String projectSlug, UserId userId);
+    boolean hasUserAccessToProject(String projectSlug, Optional<UserId> userId);
 
     boolean isUserSponsorLead(UserId userId, SponsorId sponsorId);
 

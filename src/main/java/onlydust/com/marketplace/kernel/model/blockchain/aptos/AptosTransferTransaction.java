@@ -46,6 +46,6 @@ public class AptosTransferTransaction extends AptosTransaction implements Transf
 
     @Override
     public Optional<String> contractAddress() {
-        return Optional.ofNullable(coinType).map(AptosCoinType::contractAddress);
+        return Optional.ofNullable(coinType).map(AptosCoinType::toString);
     }
 }

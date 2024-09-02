@@ -12,7 +12,7 @@ public class AptosCoinType extends PrefixedHexHash {
     String coinType;
 
     public AptosCoinType(final @NonNull String coinType) {
-        super(MAX_BYTE_COUNT, coinType.split(":")[0]);
+        super(MAX_BYTE_COUNT, coinType.split(":")[0], false);
         this.coinType = coinType;
     }
 

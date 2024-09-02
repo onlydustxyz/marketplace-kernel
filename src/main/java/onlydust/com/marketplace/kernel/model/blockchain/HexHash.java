@@ -12,7 +12,11 @@ public abstract class HexHash extends Hash {
     private static final Pattern HEX_PATTERN = Pattern.compile("[0-9a-fA-F]+");
 
     protected HexHash(final int maxByteCount, final @NonNull String hash) {
-        super(maxByteCount * 2, sanitize(hash));
+        this(maxByteCount, hash, true);
+    }
+    
+    protected HexHash(final int maxByteCount, final @NonNull String hash, boolean sanitized) {
+        super(maxByteCount * 2, sanitized ? sanitize(hash) : hash);
 
         if (!HEX_PATTERN.matcher(hash).matches())
             throw badRequest("Provided hash is not hexadecimal");

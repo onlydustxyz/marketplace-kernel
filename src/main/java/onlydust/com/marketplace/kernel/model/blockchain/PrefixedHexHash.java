@@ -14,8 +14,16 @@ public abstract class PrefixedHexHash extends HexHash {
         this(maxByteCount, "0x", hash);
     }
 
+    protected PrefixedHexHash(final int maxByteCount, final @NonNull String hash, boolean sanitized) {
+        this(maxByteCount, "0x", hash, sanitized);
+    }
+
     protected PrefixedHexHash(final int maxByteCount, final @NonNull String prefix, final @NonNull String hash) {
-        super(maxByteCount, hash.substring(min(hash.length(), prefix.length())));
+        this(maxByteCount, prefix, hash, true);
+    }
+
+    protected PrefixedHexHash(final int maxByteCount, final @NonNull String prefix, final @NonNull String hash, boolean sanitized) {
+        super(maxByteCount, hash.substring(min(hash.length(), prefix.length())), sanitized);
         this.prefix = prefix;
 
         final var hashPrefix = hash.substring(0, prefix.length());

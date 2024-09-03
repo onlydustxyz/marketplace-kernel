@@ -12,7 +12,9 @@ public enum NotificationCategory {
     /** E.g. issue application rejected/accepted, new good first issue in project X, etc. */
     CONTRIBUTOR_PROJECT,
     /** E.g. KYCB document failed, KYCB complete your profile, etc.  */
-    KYC_KYB_BILLING_PROFILE,
+    GLOBAL_BILLING_PROFILE,
+    /** E.g. product release, new incoming ODHack, etc.*/
+    GLOBAL_MARKETING
     ;
 
     public List<NotificationChannel> defaultChannels() {

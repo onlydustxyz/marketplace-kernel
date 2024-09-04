@@ -42,7 +42,7 @@ public enum Blockchain {
         Optional<String> contractAddress();
     }
 
-    URI getBlockExplorerUrl(final String reference) {
+    public URI getBlockExplorerUrl(final String reference) {
         return switch (this) {
             case ETHEREUM -> Ethereum.BLOCK_EXPLORER.url(Ethereum.transactionHash(reference));
             case OPTIMISM -> Optimism.BLOCK_EXPLORER.url(Optimism.transactionHash(reference));

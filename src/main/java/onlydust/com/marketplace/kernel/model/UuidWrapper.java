@@ -15,6 +15,7 @@ public abstract class UuidWrapper {
     @Builder.Default
     private final UUID uuid = UUID.randomUUID();
 
+    @Override
     public String toString() {
         return uuid.toString();
     }

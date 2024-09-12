@@ -1,5 +1,6 @@
 package onlydust.com.marketplace.kernel.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -15,6 +16,7 @@ public class SponsorId extends UuidWrapper {
         return SponsorId.builder().uuid(uuid).build();
     }
 
+    @JsonCreator
     public static SponsorId of(@NonNull final String uuid) {
         return SponsorId.of(UUID.fromString(uuid));
     }

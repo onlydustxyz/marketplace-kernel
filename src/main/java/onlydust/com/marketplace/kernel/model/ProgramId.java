@@ -1,5 +1,6 @@
 package onlydust.com.marketplace.kernel.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -15,6 +16,7 @@ public class ProgramId extends UuidWrapper {
         return ProgramId.builder().uuid(uuid).build();
     }
 
+    @JsonCreator
     public static ProgramId of(@NonNull final String uuid) {
         return ProgramId.of(UUID.fromString(uuid));
     }

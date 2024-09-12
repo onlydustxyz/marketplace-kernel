@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
+import onlydust.com.marketplace.kernel.model.UserId;
 import onlydust.com.marketplace.kernel.model.UuidWrapper;
 
 import java.time.ZoneOffset;
@@ -19,26 +20,23 @@ import java.util.UUID;
 @AllArgsConstructor
 @Accessors(fluent = true)
 public class Notification {
-    @NonNull Id id;
+    @NonNull
+    Id id;
 
-    @NonNull UUID recipientId;
+    @NonNull
+    UserId recipientId;
 
-    @NonNull NotificationData data;
+    @NonNull
+    NotificationData data;
 
-    @NonNull ZonedDateTime createdAt;
+    @NonNull
+    ZonedDateTime createdAt;
 
-    @NonNull Set<NotificationChannel> channels;
+    @NonNull
+    Set<NotificationChannel> channels;
 
-    public static Notification of(@NonNull UUID recipientId,
-                                  @NonNull NotificationData notificationData,
-                                  @NonNull Set<NotificationChannel> channels) {
-        return Notification.builder()
-                .id(Id.random())
-                .recipientId(recipientId)
-                .data(notificationData)
-                .createdAt(ZonedDateTime.now(ZoneOffset.UTC))
-                .channels(channels)
-                .build();
+    public static Notification of(@NonNull UserId recipientId, @NonNull NotificationData notificationData, @NonNull Set<NotificationChannel> channels) {
+        return Notification.builder().id(Id.random()).recipientId(recipientId).data(notificationData).createdAt(ZonedDateTime.now(ZoneOffset.UTC)).channels(channels).build();
     }
 
     @NoArgsConstructor(staticName = "random")

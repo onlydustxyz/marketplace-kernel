@@ -23,4 +23,8 @@ public interface PermissionPort {
     boolean isUserSponsorLeadOfProgram(UserId userId, ProgramId programId);
 
     boolean isUserProgramLead(UserId userId, ProgramId programId);
+
+    default boolean hasUserAccessToProgram(UserId userId, ProgramId programId) {
+        return isUserProgramLead(userId, programId) || isUserSponsorLeadOfProgram(userId, programId);
+    }
 }

@@ -18,7 +18,7 @@ import java.util.UUID;
 @ToString(callSuper = true)
 @Accessors(fluent = true)
 public class AuthenticatedUser extends GithubUserIdentity {
-    UUID id;
+    UserId id;
     @Builder.Default
     List<Role> roles = new ArrayList<>();
     @Builder.Default
@@ -27,10 +27,7 @@ public class AuthenticatedUser extends GithubUserIdentity {
     List<BillingProfileMembership> billingProfiles = new ArrayList<>();
 
     public List<UUID> administratedBillingProfiles() {
-        return billingProfiles.stream()
-                .filter(bpm -> bpm.role() == BillingProfileMembership.Role.ADMIN)
-                .map(BillingProfileMembership::billingProfileId)
-                .toList();
+        return billingProfiles.stream().filter(bpm -> bpm.role() == BillingProfileMembership.Role.ADMIN).map(BillingProfileMembership::billingProfileId).toList();
     }
 
     public enum Role {

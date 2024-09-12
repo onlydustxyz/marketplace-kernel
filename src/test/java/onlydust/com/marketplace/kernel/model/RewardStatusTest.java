@@ -18,12 +18,7 @@ class RewardStatusTest {
     private final Long recipientId = faker.number().randomNumber(4, true);
 
     private RewardStatus rewardStatus(RewardStatus.Input status) {
-        return RewardStatus.builder()
-                .projectId(projectId)
-                .billingProfileId(billingProfileId)
-                .recipientId(recipientId)
-                .status(status)
-                .build();
+        return RewardStatus.builder().projectId(projectId).billingProfileId(billingProfileId).recipientId(recipientId).status(status).build();
     }
 
     private AuthenticatedUser recipient() {
@@ -31,24 +26,15 @@ class RewardStatusTest {
     }
 
     private AuthenticatedUser projectLead() {
-        return AuthenticatedUser.builder()
-                .githubUserId(faker.number().randomNumber(4, true))
-                .projectsLed(List.of(projectId))
-                .build();
+        return AuthenticatedUser.builder().githubUserId(faker.number().randomNumber(4, true)).projectsLed(List.of(projectId)).build();
     }
 
     private AuthenticatedUser billingProfileAdmin() {
-        return AuthenticatedUser.builder()
-                .githubUserId(faker.number().randomNumber(4, true))
-                .billingProfiles(List.of(new AuthenticatedUser.BillingProfileMembership(billingProfileId, AuthenticatedUser.BillingProfileMembership.Role.ADMIN)))
-                .build();
+        return AuthenticatedUser.builder().githubUserId(faker.number().randomNumber(4, true)).billingProfiles(List.of(new AuthenticatedUser.BillingProfileMembership(billingProfileId, AuthenticatedUser.BillingProfileMembership.Role.ADMIN))).build();
     }
 
     private AuthenticatedUser nobody() {
-        return AuthenticatedUser.builder()
-                .id(UUID.randomUUID())
-                .githubUserId(faker.number().randomNumber(4, true))
-                .build();
+        return AuthenticatedUser.builder().id(UserId.random()).githubUserId(faker.number().randomNumber(4, true)).build();
     }
 
     private AuthenticatedUser backOfficeUser() {
@@ -56,8 +42,7 @@ class RewardStatusTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = RewardStatus.Input.class, names = {"PENDING_VERIFICATION", "GEO_BLOCKED", "PAYOUT_INFO_MISSING", "LOCKED", "PENDING_REQUEST"}, mode =
-            EnumSource.Mode.EXCLUDE)
+    @EnumSource(value = RewardStatus.Input.class, names = {"PENDING_VERIFICATION", "GEO_BLOCKED", "PAYOUT_INFO_MISSING", "LOCKED", "PENDING_REQUEST"}, mode = EnumSource.Mode.EXCLUDE)
     void valid_status_as_recipient(RewardStatus.Input status) {
         assertEquals(status.toString(), rewardStatus(status).as(recipient()).name());
     }
@@ -69,15 +54,13 @@ class RewardStatusTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = RewardStatus.Input.class, names = {"PENDING_BILLING_PROFILE", "PENDING_VERIFICATION", "GEO_BLOCKED", "INDIVIDUAL_LIMIT_REACHED",
-            "PAYOUT_INFO_MISSING", "LOCKED", "PENDING_REQUEST"}, mode = EnumSource.Mode.EXCLUDE)
+    @EnumSource(value = RewardStatus.Input.class, names = {"PENDING_BILLING_PROFILE", "PENDING_VERIFICATION", "GEO_BLOCKED", "INDIVIDUAL_LIMIT_REACHED", "PAYOUT_INFO_MISSING", "LOCKED", "PENDING_REQUEST"}, mode = EnumSource.Mode.EXCLUDE)
     void valid_status_as_project_lead(RewardStatus.Input status) {
         assertEquals(status.toString(), rewardStatus(status).as(projectLead()).name());
     }
 
     @ParameterizedTest
-    @EnumSource(value = RewardStatus.Input.class, names = {"PENDING_BILLING_PROFILE", "PENDING_VERIFICATION", "GEO_BLOCKED", "INDIVIDUAL_LIMIT_REACHED",
-            "PAYOUT_INFO_MISSING", "LOCKED", "PENDING_REQUEST"})
+    @EnumSource(value = RewardStatus.Input.class, names = {"PENDING_BILLING_PROFILE", "PENDING_VERIFICATION", "GEO_BLOCKED", "INDIVIDUAL_LIMIT_REACHED", "PAYOUT_INFO_MISSING", "LOCKED", "PENDING_REQUEST"})
     void pending_contributor_as_project_lead(RewardStatus.Input status) {
         assertEquals(RewardStatus.Output.PENDING_CONTRIBUTOR, rewardStatus(status).as(projectLead()));
     }
@@ -97,9 +80,7 @@ class RewardStatusTest {
     @ParameterizedTest
     @EnumSource(value = RewardStatus.Input.class)
     void forbidden_if_nobody(RewardStatus.Input status) {
-        assertThatThrownBy(() -> rewardStatus(status).as(nobody()))
-                .isInstanceOf(OnlyDustException.class)
-                .hasMessageContaining("is not authorized to view this reward status");
+        assertThatThrownBy(() -> rewardStatus(status).as(nobody())).isInstanceOf(OnlyDustException.class).hasMessageContaining("is not authorized to view this reward status");
     }
 
 }

@@ -1,11 +1,16 @@
 package onlydust.com.marketplace.kernel.model;
 
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.SneakyThrows;
 import lombok.experimental.SuperBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
-import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,6 +22,7 @@ class Id extends UuidWrapper {
         return Id.builder().uuid(uuid).build();
     }
 
+    @JsonCreator
     public static Id of(@NonNull final String uuid) {
         return Id.of(UUID.fromString(uuid));
     }
@@ -50,8 +56,47 @@ class UuidWrapperTest {
         final var id2 = Id.random();
         assertThat(id1).isNotEqualTo(id2);
     }
+
     void f(Id id) {
         System.out.println(id);
+    }
+
+    @SneakyThrows
+    @Test
+    void can_be_serialized() {
+        final var record = new Record(Id.of("2650826c-9ac1-4f49-a218-8647f851089f"));
+        final var json = new ObjectMapper().writeValueAsString(record);
+        assertThat(json).isEqualTo("{\"id\":{\"uuid\":\"2650826c-9ac1-4f49-a218-8647f851089f\"}}");
+    }
+
+    @SneakyThrows
+    @Test
+    void can_be_deserialized_from_object() {
+        final var json = """
+                {
+                    "id": {
+                        "uuid": "2650826c-9ac1-4f49-a218-8647f851089f"
+                    }
+                }
+                """;
+        final var record = new ObjectMapper().readValue(json, Record.class);
+        assertThat(record.id().toString()).isEqualTo("2650826c-9ac1-4f49-a218-8647f851089f");
+    }
+
+    @SneakyThrows
+    @Test
+    void can_be_deserialized_from_string() {
+        final var json = """
+                {
+                    "id": "2650826c-9ac1-4f49-a218-8647f851089f"
+                }
+                """;
+        final var record = new ObjectMapper().readValue(json, Record.class);
+        assertThat(record.id().toString()).isEqualTo("2650826c-9ac1-4f49-a218-8647f851089f");
+    }
+
+    @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+    record Record(Id id) {
     }
 }
 

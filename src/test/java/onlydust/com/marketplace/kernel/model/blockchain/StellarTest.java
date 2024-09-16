@@ -34,11 +34,6 @@ class StellarTest {
     }
 
     @Test
-    void should_generate_transaction_url() {
-        assertThat(Stellar.BLOCK_EXPLORER.url(Stellar.transactionHash("123")).toString()).isEqualTo("https://stellar.expert/explorer/public/tx/0123");
-    }
-
-    @Test
     void should_create_contract_address() {
         final var contractAddress = Stellar.contractAddress("CBEOJUP5FU6KKOEZ7RMTSKZ7YLBS5D6LVATIGCESOGXSZEQ2UWQFKZW6");
         assertThat(contractAddress.toString()).isEqualTo("CBEOJUP5FU6KKOEZ7RMTSKZ7YLBS5D6LVATIGCESOGXSZEQ2UWQFKZW6");

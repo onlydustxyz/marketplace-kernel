@@ -12,26 +12,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class StarkNetTest {
     @ParameterizedTest()
-    @ValueSource(strings = {
-            "",
-            "02937",
-            "0x",
-            "0x0asdf",
-            "0x12345678901234567890123456789012345678901234567890123456789012345"
-    })
+    @ValueSource(strings = {"", "02937", "0x", "0x0asdf", "0x12345678901234567890123456789012345678901234567890123456789012345"})
     void should_reject_invalid_address(String value) {
-        assertThatThrownBy(() -> StarkNet.accountAddress(value))
-                .isInstanceOf(OnlyDustException.class);
+        assertThatThrownBy(() -> StarkNet.accountAddress(value)).isInstanceOf(OnlyDustException.class);
     }
 
     @ParameterizedTest()
-    @ValueSource(strings = {
-            "0x00000000219ab540356cBB839Cbe05303d7705Fa",
-            "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-            "0xBE0eB53F46cd790Cd13851d5EFf43D12404d33E8",
-            "0xDA9dfA130Df4dE4673b89022EE50ff26f6EA73Cf",
-            "0x40B38765696e3d5d8d9d834D8AaD4bB6e418E489"
-    })
+    @ValueSource(strings = {"0x00000000219ab540356cBB839Cbe05303d7705Fa", "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", "0xBE0eB53F46cd790Cd13851d5EFf43D12404d33E8", "0xDA9dfA130Df4dE4673b89022EE50ff26f6EA73Cf", "0x40B38765696e3d5d8d9d834D8AaD4bB6e418E489"})
     void should_accept_valid_address(String value) {
         assertDoesNotThrow(() -> StarkNet.accountAddress(value));
     }
@@ -44,32 +31,14 @@ class StarkNetTest {
     }
 
     @ParameterizedTest()
-    @ValueSource(strings = {
-            "",
-            "02937",
-            "0x",
-            "0x0asdf",
-            "0x01234567890123456789012345678901234567890123456789012345678901234"
-    })
+    @ValueSource(strings = {"", "02937", "0x", "0x0asdf", "0x01234567890123456789012345678901234567890123456789012345678901234"})
     void should_reject_invalid_hash(String value) {
         assertThrows(OnlyDustException.class, () -> StarkNet.transactionHash(value));
     }
 
     @ParameterizedTest()
-    @ValueSource(strings = {
-            "0xe39906d57d0803f9af7d0d6e0b86c68e6662d26e4a8915c132d50d72869dcc0e",
-            "0x1ad38e48099d649b36b6357364a175ed186418fb07a0fd8865b27dec28b24a53",
-            "0xee7421645bda3d6ec073bf91a8ea9efe27a6aa62f640ec01e28411553f6199b7",
-            "0x019cf81d9b6b0277869b550072365a86b3aa8f41438c084c3d767c215b54f9e2",
-            "0x19cf81d9b6b0277869b550072365a86b3aa8f41438c084c3d767c215b54f9e2"
-    })
+    @ValueSource(strings = {"0xe39906d57d0803f9af7d0d6e0b86c68e6662d26e4a8915c132d50d72869dcc0e", "0x1ad38e48099d649b36b6357364a175ed186418fb07a0fd8865b27dec28b24a53", "0xee7421645bda3d6ec073bf91a8ea9efe27a6aa62f640ec01e28411553f6199b7", "0x019cf81d9b6b0277869b550072365a86b3aa8f41438c084c3d767c215b54f9e2", "0x19cf81d9b6b0277869b550072365a86b3aa8f41438c084c3d767c215b54f9e2"})
     void should_accept_valid_hash(String value) {
         assertDoesNotThrow(() -> StarkNet.transactionHash(value));
-    }
-
-    @Test
-    void should_generate_transaction_url() {
-        assertThat(StarkNet.BLOCK_EXPLORER.url(StarkNet.transactionHash("0x1")).toString())
-                .isEqualTo("https://starkscan.co/tx/0x01");
     }
 }

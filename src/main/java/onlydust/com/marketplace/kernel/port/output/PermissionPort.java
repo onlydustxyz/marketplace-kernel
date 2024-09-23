@@ -1,10 +1,8 @@
 package onlydust.com.marketplace.kernel.port.output;
 
-import onlydust.com.marketplace.kernel.model.ProgramId;
-import onlydust.com.marketplace.kernel.model.ProjectId;
-import onlydust.com.marketplace.kernel.model.SponsorId;
-import onlydust.com.marketplace.kernel.model.UserId;
+import onlydust.com.marketplace.kernel.model.*;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface PermissionPort {
@@ -23,6 +21,14 @@ public interface PermissionPort {
     boolean isUserSponsorLeadOfProgram(UserId userId, ProgramId programId);
 
     boolean isUserProgramLead(UserId userId, ProgramId programId);
+
+    List<ProgramId> getLeadPrograms(UserId userId);
+
+    List<EcosystemId> getLeadEcosystems(UserId userId);
+
+    List<SponsorId> getLeadSponsors(UserId userId);
+
+    List<ProjectId> getLeadProjects(UserId userId);
 
     default boolean hasUserAccessToProgram(UserId userId, ProgramId programId) {
         return isUserProgramLead(userId, programId) || isUserSponsorLeadOfProgram(userId, programId);

@@ -22,13 +22,13 @@ public interface PermissionPort {
 
     boolean isUserProgramLead(UserId userId, ProgramId programId);
 
-    List<ProgramId> getLeadPrograms(UserId userId);
+    List<ProgramId> getLedProgramIds(UserId userId);
 
-    List<EcosystemId> getLeadEcosystems(UserId userId);
+    List<EcosystemId> getLedEcosystemIds(UserId userId);
 
-    List<SponsorId> getLeadSponsors(UserId userId);
+    List<SponsorId> getLedSponsorIds(UserId userId);
 
-    List<ProjectId> getLeadProjects(UserId userId);
+    List<ProjectId> getLedProjectIds(UserId userId);
 
     default boolean hasUserAccessToProgram(UserId userId, ProgramId programId) {
         return isUserProgramLead(userId, programId) || isUserSponsorLeadOfProgram(userId, programId);

@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PermissionPort {
+    boolean isUserProjectLead(OrSlug<ProjectId> projectIdOrSlug, UserId projectLeadId);
+
     boolean isUserProjectLead(ProjectId projectId, UserId projectLeadId);
 
     boolean isUserContributor(String contributionId, Long githubUserId);

@@ -8,6 +8,7 @@ import lombok.experimental.Accessors;
 import lombok.experimental.SuperBuilder;
 import onlydust.com.marketplace.kernel.model.github.GithubUserIdentity;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -19,6 +20,8 @@ import java.util.UUID;
 @Accessors(fluent = true)
 public class AuthenticatedUser extends GithubUserIdentity {
     UserId id;
+    ZonedDateTime createdAt;
+    ZonedDateTime lastSeenAt;
     @Builder.Default
     List<Role> roles = new ArrayList<>();
     @Builder.Default

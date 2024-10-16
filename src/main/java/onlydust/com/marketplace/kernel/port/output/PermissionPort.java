@@ -35,4 +35,6 @@ public interface PermissionPort {
     default boolean hasUserAccessToProgram(UserId userId, ProgramId programId) {
         return isUserProgramLead(userId, programId) || isUserSponsorLeadOfProgram(userId, programId);
     }
+
+    boolean isUserProjectLeadOnProjectLinkedToContribution(UserId userId, Long contributionGithubId);
 }

@@ -36,7 +36,5 @@ public interface PermissionPort {
         return isUserProgramLead(userId, programId) || isUserSponsorLeadOfProgram(userId, programId);
     }
 
-    boolean canUserUpdateIssue(UserId userId, Long githubIssueId);
-
-    boolean canUserUpdatePullRequest(UserId userId, Long githubPullRequestId);
+    boolean canUserUpdateContribution(UserId userId, ContributionUUID contributionUuid);
 }

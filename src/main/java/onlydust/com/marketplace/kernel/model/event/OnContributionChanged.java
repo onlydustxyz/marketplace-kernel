@@ -7,6 +7,8 @@ import lombok.experimental.Accessors;
 import onlydust.com.marketplace.kernel.model.Event;
 import onlydust.com.marketplace.kernel.model.EventType;
 
+import java.util.UUID;
+
 @Value
 @Builder
 @EqualsAndHashCode(callSuper = true)
@@ -19,4 +21,5 @@ import onlydust.com.marketplace.kernel.model.EventType;
 public class OnContributionChanged extends Event {
     @NonNull
     Long repoId;
+    UUID contributionUUID;
 }

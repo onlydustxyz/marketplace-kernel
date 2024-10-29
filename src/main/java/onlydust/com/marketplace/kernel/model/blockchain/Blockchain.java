@@ -5,7 +5,7 @@ import java.time.ZonedDateTime;
 import java.util.Optional;
 
 public enum Blockchain {
-    ETHEREUM, OPTIMISM, STARKNET, APTOS, STELLAR;
+    ETHEREUM, OPTIMISM, STARKNET, APTOS, STELLAR, NEAR;
 
     public String pretty() {
         return switch (this) {
@@ -14,6 +14,7 @@ public enum Blockchain {
             case STARKNET -> "StarkNet";
             case APTOS -> "Aptos";
             case STELLAR -> "Stellar";
+            case NEAR -> "Near";
         };
     }
 

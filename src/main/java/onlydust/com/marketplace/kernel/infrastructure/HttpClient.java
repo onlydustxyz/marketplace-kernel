@@ -79,9 +79,16 @@ public abstract class HttpClient {
                                                 final String... headers) {
         try {
             final var request = headers.length == 0 ? buildRequest(method, path, requestBody) : buildRequest(method, path, requestBody, headers);
+            return sendHttpRequest(request);
+        } catch (JsonProcessingException e) {
+            throw internalServerError("Fail to serialize request", e);
+        }
+    }
+
+    public Optional<byte[]> sendHttpRequest(final HttpRequest request) {
+        try {
             final var httpResponse = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
             final int statusCode = httpResponse.statusCode();
-
             final var body = httpResponse.body();
             return switch (statusCode) {
                 case 400 -> throw badRequest("Bad request error received from %s: %s".formatted(request, bodyString(body)));
@@ -91,8 +98,6 @@ public abstract class HttpClient {
                 case 200, 201, 202 -> Optional.of(body);
                 default -> throw internalServerError(format("Unknown error (status %d) when calling %s: %s", statusCode, request, bodyString(body)));
             };
-        } catch (JsonProcessingException e) {
-            throw internalServerError("Fail to serialize request", e);
         } catch (IOException | InterruptedException e) {
             throw internalServerError("Fail send request", e);
         }

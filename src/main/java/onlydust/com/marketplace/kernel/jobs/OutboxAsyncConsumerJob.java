@@ -7,6 +7,7 @@ import onlydust.com.marketplace.kernel.port.output.OutboxPort;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static onlydust.com.marketplace.kernel.exception.OnlyDustException.internalServerError;
 
@@ -16,6 +17,7 @@ public class OutboxAsyncConsumerJob {
     private final OutboxPort outbox;
     private final OutboxConsumer consumer;
     private final Semaphore semaphore;
+    private final AtomicBoolean isRunning = new AtomicBoolean(false);
 
     public OutboxAsyncConsumerJob(OutboxPort outbox, OutboxConsumer consumer, int maxConcurrency) {
         this.outbox = outbox;
@@ -24,15 +26,24 @@ public class OutboxAsyncConsumerJob {
     }
 
     public void run() {
-        Optional<OutboxPort.IdentifiableEvent> identifiableEvent;
-        while ((identifiableEvent = outbox.peek()).isPresent()) {
-            try {
-                semaphore.acquire(); // Will wait here if <maxConcurrency> commands are already being processed
-                final var e = identifiableEvent;
-                CompletableFuture.runAsync(() -> processEvent(e.get()));
-            } catch (InterruptedException e) {
-                throw internalServerError("Interrupted while waiting to process command");
+        if (!isRunning.compareAndSet(false, true)) {
+            LOGGER.info("OutboxAsyncConsumerJob of %s is already running, skipping this execution".formatted(consumer.getClass().getSimpleName()));
+            return;
+        }
+
+        try {
+            Optional<OutboxPort.IdentifiableEvent> identifiableEvent;
+            while ((identifiableEvent = outbox.peek()).isPresent()) {
+                try {
+                    semaphore.acquire(); // Will wait here if <maxConcurrency> commands are already being processed
+                    final var e = identifiableEvent;
+                    CompletableFuture.runAsync(() -> processEvent(e.get()));
+                } catch (InterruptedException e) {
+                    throw internalServerError("Interrupted while waiting to process command");
+                }
             }
+        } finally {
+            isRunning.set(false);
         }
     }
 

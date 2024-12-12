@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.concurrent.CompletableFuture.runAsync;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -74,6 +73,7 @@ class OutboxAsyncConsumerJobTest {
             newTestEvent(i);
         }
         runAsync(() -> job.run());
+        runAsync(() -> job.run()); // Check that running the job multiple times doesn't process the same event twice
 
         // Then
         assertThat(startLatch.await(500, TimeUnit.MILLISECONDS)).isTrue();
@@ -81,6 +81,7 @@ class OutboxAsyncConsumerJobTest {
         assertThat(processLatch.await(2, TimeUnit.SECONDS)).isTrue();
         assertThat(concurrentEventIds).hasSize(eventCount);
 
+        verify(outbox, times(eventCount + 1)).peek();
         verify(outbox, times(eventCount)).ack(anyLong());
         verify(consumer, times(eventCount)).process(any());
     }
@@ -139,17 +140,12 @@ class OutboxAsyncConsumerJobTest {
         verify(outbox).ack(eq(3L));
     }
 
-    private TestEvent newTestEvent(final long id) {
-        final var event = new TestEvent(id);
-        outbox.addEvent(new OutboxPort.IdentifiableEvent(id, event));
-        return event;
+    private void newTestEvent(final long id) {
+        outbox.addEvent(new OutboxPort.IdentifiableEvent(id, new TestEvent(id)));
     }
 
     static class OutboxPortStub implements OutboxPort {
         private final Queue<IdentifiableEvent> events = new LinkedList<>();
-        public final AtomicInteger ackCount = new AtomicInteger();
-        public final AtomicInteger nackCount = new AtomicInteger();
-        public final AtomicInteger skipCount = new AtomicInteger();
 
         public void addEvent(IdentifiableEvent event) {
             events.add(event);
@@ -168,19 +164,16 @@ class OutboxAsyncConsumerJobTest {
         @Override
         public void ack(Long eventId) {
             System.out.println("Acknowledging event " + eventId);
-            ackCount.incrementAndGet();
         }
 
         @Override
         public void nack(Long eventId, String message) {
             System.out.println("Nacking event " + eventId + " because " + message);
-            nackCount.incrementAndGet();
         }
 
         @Override
         public void skip(Long eventId, String someReasonToSkip) {
             System.out.println("Skipping event " + eventId + " because " + someReasonToSkip);
-            skipCount.incrementAndGet();
         }
     }
 }

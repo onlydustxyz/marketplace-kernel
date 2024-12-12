@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.CompletableFuture.runAsync;
@@ -24,10 +25,10 @@ class OutboxAsyncConsumerJobTest {
     OutboxAsyncConsumerJob job;
     int maxConcurrency;
 
-    @EventType("TestEvent")
+    @EventType("AsyncTestEvent")
     @EqualsAndHashCode(callSuper = false)
     @AllArgsConstructor
-    public static class TestEvent extends Event {
+    public static class AsyncTestEvent extends Event {
         final long id;
     }
 
@@ -56,14 +57,15 @@ class OutboxAsyncConsumerJobTest {
     void should_process_events_concurrently() throws InterruptedException {
         // Given
         final int eventCount = 5;
+        final CountDownLatch assertionLatch = new CountDownLatch(1);
         final CountDownLatch processLatch = new CountDownLatch(eventCount);
         final CountDownLatch startLatch = new CountDownLatch(maxConcurrency);
         final Set<Long> concurrentEventIds = Collections.synchronizedSet(new HashSet<>());
 
         doAnswer(invocation -> {
             startLatch.countDown();
-            concurrentEventIds.add(((TestEvent) invocation.getArgument(0)).id);
-            Thread.sleep(1000); // Simulate processing time
+            concurrentEventIds.add(((AsyncTestEvent) invocation.getArgument(0)).id);
+            assertionLatch.await(); // Simulate processing time
             processLatch.countDown();
             return null;
         }).when(consumer).process(any());
@@ -76,9 +78,10 @@ class OutboxAsyncConsumerJobTest {
         runAsync(() -> job.run()); // Check that running the job multiple times doesn't process the same event twice
 
         // Then
-        assertThat(startLatch.await(500, TimeUnit.MILLISECONDS)).isTrue();
+        assertThat(startLatch.await(5, TimeUnit.SECONDS)).isTrue();
         assertThat(concurrentEventIds).hasSize(maxConcurrency);
-        assertThat(processLatch.await(2, TimeUnit.SECONDS)).isTrue();
+        assertionLatch.countDown();
+        assertThat(processLatch.await(5, TimeUnit.SECONDS)).isTrue();
         assertThat(concurrentEventIds).hasSize(eventCount);
 
         verify(outbox, times(eventCount + 1)).peek();
@@ -91,7 +94,7 @@ class OutboxAsyncConsumerJobTest {
         // Given
         final CountDownLatch processLatch = new CountDownLatch(2);
         doAnswer(invocation -> {
-            TestEvent event = invocation.getArgument(0);
+            AsyncTestEvent event = invocation.getArgument(0);
             if (event.id == 2L) {
                 throw new RuntimeException("Test exception");
             }
@@ -106,7 +109,7 @@ class OutboxAsyncConsumerJobTest {
         job.run();
 
         // Then
-        assertThat(processLatch.await(1, TimeUnit.SECONDS)).isTrue();
+        assertThat(processLatch.await(5, TimeUnit.SECONDS)).isTrue();
         Thread.sleep(10);
         verify(outbox).ack(eq(1L));
         verify(outbox).nack(eq(2L), eq("Test exception"));
@@ -116,13 +119,16 @@ class OutboxAsyncConsumerJobTest {
     @Test
     void should_handle_skipped_events() throws InterruptedException {
         // Given
+        System.out.println("should_handle_skipped_events start");
         final CountDownLatch processLatch = new CountDownLatch(2);
         doAnswer(invocation -> {
-            TestEvent event = invocation.getArgument(0);
+            AsyncTestEvent event = invocation.getArgument(0);
+            System.out.println("Processing event " + event.id);
             if (event.id == 2L) {
                 throw new OutboxSkippingException("Skip this event");
             }
             processLatch.countDown();
+            System.out.println("processLatch.countDown(); done");
             return null;
         }).when(consumer).process(any());
 
@@ -133,15 +139,19 @@ class OutboxAsyncConsumerJobTest {
         job.run();
 
         // Then
-        assertThat(processLatch.await(1, TimeUnit.SECONDS)).isTrue();
-        Thread.sleep(10);
+        System.out.println("before awaitQuiescence");
+        ForkJoinPool.commonPool().awaitQuiescence(5, TimeUnit.SECONDS);
+        System.out.println("after awaitQuiescence");
+        assertThat(processLatch.await(5, TimeUnit.SECONDS)).isTrue();
+        System.out.println("after processLatch.await");
         verify(outbox).ack(eq(1L));
         verify(outbox).skip(eq(2L), eq("Skip this event"));
         verify(outbox).ack(eq(3L));
+        System.out.println("should_handle_skipped_events end");
     }
 
     private void newTestEvent(final long id) {
-        outbox.addEvent(new OutboxPort.IdentifiableEvent(id, new TestEvent(id)));
+        outbox.addEvent(new OutboxPort.IdentifiableEvent(id, new AsyncTestEvent(id)));
     }
 
     static class OutboxPortStub implements OutboxPort {

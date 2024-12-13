@@ -40,7 +40,7 @@ public class OutboxAsyncConsumerJob {
                 }
                 final var e = identifiableEvent.get();
                 ensureEventIsNotBeingProcessed(e.id());
-                futures.put(e.id(), runAsync(() -> processEvent(e)).whenComplete((v, t) -> futures.remove(e.id())));
+                safelyPutFuture(e.id(), runAsync(() -> processEvent(e)).whenComplete((v, t) -> futures.remove(e.id())));
             }
         } finally {
             isRunning.set(false);
@@ -52,6 +52,12 @@ public class OutboxAsyncConsumerJob {
         if (futures.containsKey(eventId)) {
             throw new IllegalStateException("Event %d is already being processed. The OutboxPort.peek() implementation should not return the same pending event twice.".formatted(eventId));
         }
+    }
+
+    private void safelyPutFuture(Long eventId, CompletableFuture<Void> future) {
+        futures.put(eventId, future);
+        if (future.isDone())
+            futures.remove(eventId);
     }
 
     private void processEvent(OutboxPort.IdentifiableEvent identifiableEvent) {

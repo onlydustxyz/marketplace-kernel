@@ -40,7 +40,7 @@ public class OutboxAsyncConsumerJob {
                 }
                 final var e = identifiableEvent.get();
                 ensureEventIsNotBeingProcessed(e.id());
-                safelyPutFuture(e.id(), runAsync(() -> processEvent(e)));
+                safelyPutFuture(e.id(), runAsync(() -> processEvent(e)).whenComplete((v, t) -> futures.remove(e.id())));
             }
         } finally {
             isRunning.set(false);
@@ -73,8 +73,6 @@ public class OutboxAsyncConsumerJob {
                 LOGGER.error("Error while processing event %d".formatted(eventId), e);
                 outbox.nack(eventId, e.getMessage());
             }
-        } finally {
-            futures.remove(eventId);
         }
     }
 }

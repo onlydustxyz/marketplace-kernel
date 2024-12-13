@@ -42,6 +42,7 @@ class OutboxConsumerJobTest {
         job.run();
 
         // Then
+        verify(outbox).peek();
         verify(outbox, never()).ack(any());
         verify(outbox, never()).skip(any(), any());
         verify(outbox, never()).nack(any(), any());

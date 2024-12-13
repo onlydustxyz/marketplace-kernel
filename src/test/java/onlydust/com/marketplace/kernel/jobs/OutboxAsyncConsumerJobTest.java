@@ -10,8 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.CompletableFuture.runAsync;
@@ -78,6 +78,7 @@ class OutboxAsyncConsumerJobTest {
         runAsync(() -> job.run()); // Check that running the job multiple times doesn't process the same event twice
 
         // Then
+        CompletableFuture.allOf(job.futures.toArray(new CompletableFuture[0])).join();
         assertThat(startLatch.await(5, TimeUnit.SECONDS)).isTrue();
         assertThat(concurrentEventIds).hasSize(maxConcurrency);
         assertionLatch.countDown();
@@ -109,6 +110,7 @@ class OutboxAsyncConsumerJobTest {
         job.run();
 
         // Then
+        CompletableFuture.allOf(job.futures.toArray(new CompletableFuture[0])).join();
         assertThat(processLatch.await(5, TimeUnit.SECONDS)).isTrue();
         Thread.sleep(10);
         verify(outbox).ack(eq(1L));
@@ -139,9 +141,7 @@ class OutboxAsyncConsumerJobTest {
         job.run();
 
         // Then
-        System.out.println("before awaitQuiescence");
-        ForkJoinPool.commonPool().awaitQuiescence(5, TimeUnit.SECONDS);
-        System.out.println("after awaitQuiescence");
+        CompletableFuture.allOf(job.futures.toArray(new CompletableFuture[0])).join();
         assertThat(processLatch.await(5, TimeUnit.SECONDS)).isTrue();
         System.out.println("after processLatch.await");
         verify(outbox).ack(eq(1L));

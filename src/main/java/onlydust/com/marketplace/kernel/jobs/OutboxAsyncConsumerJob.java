@@ -4,25 +4,25 @@ import lombok.extern.slf4j.Slf4j;
 import onlydust.com.marketplace.kernel.port.output.OutboxConsumer;
 import onlydust.com.marketplace.kernel.port.output.OutboxPort;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static onlydust.com.marketplace.kernel.exception.OnlyDustException.internalServerError;
 
 @Slf4j
 public class OutboxAsyncConsumerJob {
 
     private final OutboxPort outbox;
     private final OutboxConsumer consumer;
-    private final Semaphore semaphore;
     private final AtomicBoolean isRunning = new AtomicBoolean(false);
+    private final int maxConcurrency;
+    final List<CompletableFuture<Void>> futures = new ArrayList<>();
 
     public OutboxAsyncConsumerJob(OutboxPort outbox, OutboxConsumer consumer, int maxConcurrency) {
         this.outbox = outbox;
         this.consumer = consumer;
-        this.semaphore = new Semaphore(maxConcurrency);
+        this.maxConcurrency = maxConcurrency;
     }
 
     public void run() {
@@ -34,13 +34,11 @@ public class OutboxAsyncConsumerJob {
         try {
             Optional<OutboxPort.IdentifiableEvent> identifiableEvent;
             while ((identifiableEvent = outbox.peek()).isPresent()) {
-                try {
-                    semaphore.acquire(); // Will wait here if <maxConcurrency> commands are already being processed
-                    final var e = identifiableEvent;
-                    CompletableFuture.runAsync(() -> processEvent(e.get()));
-                } catch (InterruptedException e) {
-                    throw internalServerError("Interrupted while waiting to process command");
+                if (futures.size() >= maxConcurrency) {
+                    CompletableFuture.anyOf(futures.toArray(CompletableFuture[]::new)).join(); // Will wait here if <maxConcurrency> commands are already being processed
                 }
+                final var e = identifiableEvent;
+                futures.add(CompletableFuture.runAsync(() -> processEvent(e.get())));
             }
         } finally {
             isRunning.set(false);
@@ -59,10 +57,7 @@ public class OutboxAsyncConsumerJob {
             } else {
                 LOGGER.error("Error while processing event %d".formatted(eventId), e);
                 outbox.nack(eventId, e.getMessage());
-                throw e;
             }
-        } finally {
-            semaphore.release();
         }
     }
 }

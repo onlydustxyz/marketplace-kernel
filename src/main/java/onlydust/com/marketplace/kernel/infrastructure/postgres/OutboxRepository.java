@@ -3,16 +3,16 @@ package onlydust.com.marketplace.kernel.infrastructure.postgres;
 import jakarta.persistence.LockModeType;
 import lombok.NonNull;
 import onlydust.com.marketplace.kernel.model.Event;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.NoRepositoryBean;
+import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
 @NoRepositoryBean
-public interface OutboxRepository<E extends EventEntity> extends JpaRepository<E, Long> {
+public interface OutboxRepository<E extends EventEntity> extends Repository<E, Long> {
 
     void saveEvent(@NonNull Event event);
 

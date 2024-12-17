@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface IndexerPort {
-    void indexUser(Long githubUserId);
+    void indexUser(Long githubUserId, boolean forceRefresh);
 
     void indexUsers(List<Long> githubUserIds);
 
